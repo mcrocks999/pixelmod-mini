@@ -68,7 +68,17 @@ public class Mini {
 		textField.setBounds(95, 51, 329, 20);
 		panel.add(textField);
 		textField.setColumns(10);
-		textField.setText(System.getenv("AppData")+"/.minecraft");
+		
+		String workingDirectory = "";
+		String OS = (System.getProperty("os.name")).toUpperCase();
+		if (OS.contains("WIN")) {
+		    workingDirectory = System.getenv("AppData");
+		} else {
+		    workingDirectory = System.getProperty("user.home");
+		    workingDirectory += "/Library/Application Support";
+		}
+		textField.setText(workingDirectory+"/.minecraft");
+		
 		frmMiniInstaller.setVisible(true);
 	}
 }
