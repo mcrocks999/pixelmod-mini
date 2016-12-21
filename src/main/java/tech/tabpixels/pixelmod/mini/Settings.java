@@ -18,6 +18,7 @@ public class Settings {
     public static void load()
     {
     	findWorkingDir();
+    	defaultSetup();
     	
     	JSONParser parser = new JSONParser();
     	try {
@@ -27,8 +28,6 @@ public class Settings {
 			try {technicDirectory = (String) obj.get("technicDir");}catch(Exception e){}
 			try {multimcDirectory = (String) obj.get("multimcDir");}catch(Exception e){}
 		} catch (Exception e) {e.printStackTrace();}
-    	
-    	defaultSetup();
     }
 	
 	public static void save()
@@ -57,7 +56,7 @@ public class Settings {
 	
 	public static void defaultSetup()
 	{
-		if (Settings.technicDirectory.length()<1) {Settings.technicDirectory = workingDirectory+"/.technic/modpacks";}
-		if (Settings.minecraftDirectory.length()<1) {Settings.minecraftDirectory = workingDirectory+"/.minecraft/mods";}
+		Settings.technicDirectory = workingDirectory+"/.technic/modpacks";
+		Settings.minecraftDirectory = workingDirectory+"/.minecraft/mods";
 	}
 }

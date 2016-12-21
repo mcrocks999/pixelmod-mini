@@ -145,7 +145,7 @@ public class Mini {
         	loadTechnic();
         } else {
         	Settings.selection = 2;
-        	textField.setText("NO CURRENT SUPPORT FOR MULTIMC");
+        	loadMultiMC();
         }
     }
 	
@@ -154,6 +154,9 @@ public class Mini {
 		if (isValid) {
 			if (Settings.selection == 1) {
 				textField.setText(Settings.technicDirectory + "/"+comboBox_1.getItemAt(comboBox_1.getSelectedIndex())+"/mods");
+				isSelected = true;
+	        } else if (Settings.selection == 2) {
+				textField.setText(Settings.multimcDirectory + "/"+comboBox_1.getItemAt(comboBox_1.getSelectedIndex())+"/minecraft/mods");
 				isSelected = true;
 	        }
 		} else if (Settings.selection != 0) {
@@ -164,7 +167,7 @@ public class Mini {
     public static void loadMinecraft()
     {
         comboBox_1.setModel(new DefaultComboBoxModel(new String[] {".minecraft"}));
-    	if (Files.exists(Paths.get(Settings.minecraftDirectory)) && Paths.get(Settings.minecraftDirectory).toAbsolutePath()!=Paths.get("").toAbsolutePath()) {
+    	if (Files.exists(Paths.get(Settings.minecraftDirectory)) && Settings.minecraftDirectory.isEmpty()) {
 		    comboBox_1.setModel(new DefaultComboBoxModel(new String[]{"Using valid Minecraft installation"}));
 	        textField.setText(Settings.minecraftDirectory);
 		    isSelected = true;
@@ -178,7 +181,7 @@ public class Mini {
 		    	if (fileChooser.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
 		    		File file = fileChooser.getSelectedFile();
 		    		Settings.minecraftDirectory = file.getAbsolutePath()+"/mods";
-			    	changeMode(1);
+			    	loadMinecraft();
 			    	return;
 		    	}
 	    	}
@@ -188,7 +191,7 @@ public class Mini {
     
     public static void loadTechnic()
     {
-        if (Files.exists(Paths.get(Settings.technicDirectory)) && Paths.get(Settings.technicDirectory).toAbsolutePath()!=Paths.get("").toAbsolutePath()) {
+        if (Files.exists(Paths.get(Settings.technicDirectory)) && Settings.technicDirectory.isEmpty()) {
         	String[] directories = new File(Settings.technicDirectory).list(new FilenameFilter() {
 	     	  public boolean accept(File current, String name) {
 	        	return new File(current, name).isDirectory();
@@ -207,11 +210,40 @@ public class Mini {
 		    	if (fileChooser.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
 		    		File file = fileChooser.getSelectedFile();
 		    		Settings.technicDirectory = file.getAbsolutePath()+"/modpacks";
-			    	changeMode(1);
+			    	loadTechnic();
 			    	return;
 		    	}
 	    	}
 	    	textField.setText("Invalid Technic installation");
+	    }
+    }
+    
+    public static void loadMultiMC()
+    {
+        if (Files.exists(Paths.get(Settings.multimcDirectory)) && !Settings.multimcDirectory.isEmpty()) {
+        	String[] directories = new File(Settings.multimcDirectory).list(new FilenameFilter() {
+	     	  public boolean accept(File current, String name) {
+	        	return new File(current, name).isDirectory();
+	          }
+	        });
+		    comboBox_1.setModel(new DefaultComboBoxModel(directories));
+	    	textField.setText("Please choose an instance");
+	    	isValid = true;
+	    } else {
+	    	textField.setText("MultiMC installation not found");
+	    	comboBox_1.setModel(new DefaultComboBoxModel(new String[]{"Please see error above!"}));
+	    	int result = JOptionPane.showConfirmDialog(null, "MultiMC not found, select directory?", null, JOptionPane.YES_NO_OPTION);
+	    	if (result == JOptionPane.YES_OPTION) {
+		    	JFileChooser fileChooser = new JFileChooser();
+		    	fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		    	if (fileChooser.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
+		    		File file = fileChooser.getSelectedFile();
+		    		Settings.multimcDirectory = file.getAbsolutePath()+"/instances";
+			    	loadMultiMC();
+			    	return;
+		    	}
+	    	}
+	    	textField.setText("Invalid MultiMC installation");
 	    }
     }
 }
