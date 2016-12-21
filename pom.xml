@@ -4,7 +4,7 @@
 
   <groupId>tech.tabpixels</groupId>
   <artifactId>pixelmod.mini</artifactId>
-  <version>0.0.2-SNAPSHOT</version>
+  <version>0.0.3-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>pixelmod-mini</name>
@@ -30,7 +30,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.2.1</version>
+                <version>0.0.3</version>
                 <executions>
                     <execution>
                         <id>package-jar-with-dependencies</id>
