@@ -422,7 +422,8 @@ public class FileDrop
         
     }   // end inner-interface Listener
     
-    public static class Event extends java.util.EventObject {
+    @SuppressWarnings("serial")
+	public static class Event extends java.util.EventObject {
 
         private java.io.File[] files;
 

@@ -16,6 +16,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
@@ -31,7 +33,6 @@ public class Mini {
 	private static JTextField textField;
 	public static JComboBox comboBox = new JComboBox();
     public static JComboBox comboBox_1 = new JComboBox();
-	public static String workingDirectory = "";
 	public static Boolean isSelected = false;
 	public static Boolean isValid = false;
 	
@@ -39,6 +40,16 @@ public class Mini {
 	 * @wbp.parser.entryPoint
 	 */
 	public static void create() {
+		Settings.load();
+		
+		try {
+		    for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+		        if ("Nimbus".equals(info.getName())) {
+		            UIManager.setLookAndFeel(info.getClassName());
+		            break;
+		        }
+		    }
+		} catch (Exception e) {}
 		frame = new JFrame();
 		frame.setTitle("Mini Installer");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -47,6 +58,13 @@ public class Mini {
 		contentPane.setBorder(new EmptyBorder(0, 0, 0, 0));
 		contentPane.setLayout(new BorderLayout(0, 0));
 		frame.setContentPane(contentPane);
+		frame.addWindowListener(new java.awt.event.WindowAdapter() {
+		    @Override
+		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+		    	Settings.save();
+		    	System.exit(0);
+		    }
+		});
 		
 		JPanel panel = new JPanel();
 		contentPane.add(panel, BorderLayout.CENTER);
@@ -77,23 +95,13 @@ public class Mini {
 		panel.add(lblDragAndDrop);
 		
 		JLabel lblInstallingTo = new JLabel("Installing to:");
-		lblInstallingTo.setBounds(10, 54, 75, 14);
+		lblInstallingTo.setBounds(10, 51, 75, 14);
 		panel.add(lblInstallingTo);
 		
 		textField = new JTextField();
-		textField.setBounds(95, 51, 329, 20);
+		textField.setBounds(95, 45, 329, 26);
 		panel.add(textField);
 		textField.setColumns(10);
-		
-		String OS = (System.getProperty("os.name")).toUpperCase();
-		if (OS.contains("WIN")) {
-		    workingDirectory = System.getenv("AppData");
-		} else {
-		    workingDirectory = System.getProperty("user.home");
-		    workingDirectory += "/Library/Application Support";
-		}
-        Settings.technicDirectory = workingDirectory+"/.technic/modpacks";
-        Settings.minecraftDirectory = workingDirectory+"/.minecraft/mods";
 		
 		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Default Minecraft", "Technic Modpack", "MultiMC"}));
 		comboBox.setBounds(10, 79, 156, 20);
@@ -161,13 +169,20 @@ public class Mini {
 	        textField.setText(Settings.minecraftDirectory);
 		    isSelected = true;
 	    } else {
-	    	JFileChooser fileChooser = new JFileChooser();
-	    	fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-	    	if (fileChooser.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
-	    		File file = fileChooser.getSelectedFile();
-	    		Settings.minecraftDirectory = file.getAbsolutePath()+"/mods";
+	    	textField.setText("Minecraft installation not found");
+	    	comboBox_1.setModel(new DefaultComboBoxModel(new String[]{"Please see error above!"}));
+	    	int result = JOptionPane.showConfirmDialog(null, "Minecraft not found, select directory?", null, JOptionPane.YES_NO_OPTION);
+	    	if (result == JOptionPane.YES_OPTION) {
+		    	JFileChooser fileChooser = new JFileChooser();
+		    	fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		    	if (fileChooser.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
+		    		File file = fileChooser.getSelectedFile();
+		    		Settings.minecraftDirectory = file.getAbsolutePath()+"/mods";
+			    	changeMode(1);
+			    	return;
+		    	}
 	    	}
-	    	changeMode(0);
+	    	textField.setText("Invalid Minecraft installation");
 	    }
     }
     
