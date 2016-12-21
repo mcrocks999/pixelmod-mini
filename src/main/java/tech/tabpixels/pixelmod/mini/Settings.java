@@ -57,7 +57,7 @@ public class Settings {
 	
 	public static void defaultSetup()
 	{
-		if (Settings.technicDirectory.length()<1) {Settings.technicDirectory = workingDirectory+"/.technic/modpacks";}
-		if (Settings.minecraftDirectory.length()<1) {Settings.minecraftDirectory = workingDirectory+"/.minecraft/mods";}
+		if (Settings.technicDirectory.length()<2) {Settings.technicDirectory = workingDirectory+"/.technic/modpacks";}
+		if (Settings.minecraftDirectory.length()<2) {Settings.minecraftDirectory = workingDirectory+"/.minecraft/mods";}
 	}
 }
