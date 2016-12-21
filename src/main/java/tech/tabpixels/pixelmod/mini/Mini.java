@@ -164,7 +164,7 @@ public class Mini {
     public static void loadMinecraft()
     {
         comboBox_1.setModel(new DefaultComboBoxModel(new String[] {".minecraft"}));
-    	if (Files.exists(Paths.get(Settings.minecraftDirectory))) {
+    	if (Files.exists(Paths.get(Settings.minecraftDirectory)) && Settings.minecraftDirectory!="") {
 		    comboBox_1.setModel(new DefaultComboBoxModel(new String[]{"Using valid Minecraft installation"}));
 	        textField.setText(Settings.minecraftDirectory);
 		    isSelected = true;
@@ -188,7 +188,7 @@ public class Mini {
     
     public static void loadTechnic()
     {
-        if (Files.exists(Paths.get(Settings.technicDirectory))) {
+        if (Files.exists(Paths.get(Settings.technicDirectory)) && Settings.technicDirectory!="") {
         	String[] directories = new File(Settings.technicDirectory).list(new FilenameFilter() {
 	     	  public boolean accept(File current, String name) {
 	        	return new File(current, name).isDirectory();
